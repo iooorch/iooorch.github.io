@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reloj app</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body id="body__bg">
+  <main class="main__container">
+
+    <article class="article__container container">
+
+      <div class="quote__container ">
+
+        <h1 id="quote" class="quote__heading">Cargando ...</h1>
+        
+        <p id="author" class="quote__author">cargando ...</p>
+          
+      </div>
+
+      <button id="btn" class="btn__reload">
+        <img src="i/reload.svg" alt="boton reload" class="icon__reload">
+      </button>
+      
+    </article>
+
+    <section class="clock__section container">
+
+      <div class="clock__container">
+
+        <div class="clock__texts">
+          
+          <img src="i/sun.svg" alt="icono sol" id="hour__icon" class="clock__icon">
+          
+          <p id="greeting" class="paragraph">Buenos días</p>
+
+        </div>
+
+        <p id="clock" class="clock">cargando ...</p>
+
+      </div>
+      
+      <button id="btn__show__more" class="btn__show__more">
+        <p id="btn__text">Mostrar más</p> 
+        <img src="i/chevron-up.svg" id="btn__icon">
+      </button>
+
+    </section>
+
+    <section id="weather__section" class="weather__section">
+
+      <div class="container">
+
+        <div class="calendar__container">
+        
+          <p id="day" class="calendar__day weather__data">cargando ...</p>
+
+          <p id="month" class="calendar__month weather__data">cargando ...</p>
+          
+          <p id="year" class="calendar__year weather__data">cargando ...</p>
+        
+        </div>
+
+        <div class="weather__data__container">
+
+          <div class="temp__container">
+          
+            <p class="paragraph">Temperatura en CDMX</p>
+          
+            <p id="weather" class="weather__temperature weather__data">cargando...</p>
+          
+          </div>
+          
+          <div class="temp__container">
+          
+            <p class="paragraph">Temperatura Max.</p>
+          
+            <p id="max__temp" class="weather__max__temp weather__data">cargando...</p>
+          
+          </div>
+          
+          <div class="temp__container">
+          
+            <p class="paragraph">Temperatura Min.</p>
+          
+            <p id="min__temp" class="weather__min__temp weather__data">cargando...</p>
+          
+          </div>
+
+        </div>
+        
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+
+    function currentTime() {
+      let date = new Date();
+      let day = date.getDate();
+      let month = date.toLocaleString('default', { month: 'long' });
+      let year = date.getFullYear();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+
+      if (hours < "10") { 
+        hours = "0" + hours;
+      };
+        
+      if (minutes < "10") { 
+        minutes = "0" + minutes;
+      };
+
+      if (day < "10") {
+        day = "0" + day;
+      }
+
+      let time = hours + ":" + minutes;
+
+      document.getElementById("clock").innerText = time; 
+
+      document.getElementById("day").innerText = day; 
+
+      document.getElementById("month").innerText = month; 
+
+      document.getElementById("year").innerText = year; 
+      
+      const greeting = document.getElementById('greeting');
+      const backgroundImage = document.getElementById('body__bg');
+      const changeIcon = document.getElementById('hour__icon');
+
+    
+      if (hours > 19 || hours < 06) {
+        greeting.innerHTML = "Buenas noches";
+        backgroundImage.setAttribute('style', 'background-image: url("i/night.jpg");');
+        changeIcon.src = "i/moon.svg";
+      }        
+      else if (hours > 11 && hours < 20) {
+        greeting.innerHTML = "Buenas tardes";
+        backgroundImage.setAttribute('style', 'background-image: url("i/afternoon.jpg");');
+      }
+      else{
+        greeting.innerHTML = "Buenos días";
+        backgroundImage.setAttribute('style', 'background-image: url("i/morning.jpg");');
+        changeIcon.src = "i/sun.svg";
+      }
+      
+      setTimeout(function () {
+        currentTime()
+      }, 1000);
+
+      
+    }
+
+    currentTime();
+
+
+// funcion para mostrar la sección de clima
+  
+  const btnShowToggle = document.getElementById("btn__show__more");
+
+  const weatherSeaction = document.getElementById("weather__section");
+
+  btnShowToggle.addEventListener("click", () => {
+    weatherSeaction.classList.toggle("show")
+  });
+
+
+// funciones para cambiar texto e icono del botón mostrar más
+
+  const btnText = document.getElementById("btn__text");
+
+  function changeText() {
+  
+    if (btnText.innerHTML === "Mostrar más") { 
+      btnText.innerHTML = "Ocultar";
+      
+    }
+    else {
+      btnText.innerHTML = "Mostrar más";
+    }
+  }
+  btnShowToggle.addEventListener("click", changeText);
+
+
+
+  const btnImage = document.getElementById("btn__icon");
+
+  function changeIcon() {
+
+      if (btnImage.src === "https://iooorch.github.io/iooorch.github.io/i/chevron-up.svg") {
+        
+        btnImage.src = "https://iooorch.github.io/iooorch.github.io/i/chevron-down.svg";
+      }
+      else {
+        btnImage.src = "i/chevron-up.svg";
+      }
+    }
+    btnShowToggle.addEventListener("click", changeIcon);
+
+
+    // fetch quotes
+
+    const quote = document.getElementById("quote");
+    const author = document.getElementById("author");
+    const btn = document.getElementById("btn");
+
+
+    function getQuote(){
+      fetch("https://api.quotable.io/quotes/random?tags=inspirational")
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+          quote.innerText = datos[0].content;
+          author.innerText = datos[0].author;
+        });
+    };
+
+    window.addEventListener("load", getQuote);
+    btn.addEventListener("click", getQuote);
+
+
+    // fetch weather 
+
+      const weather = document.getElementById("weather");
+
+      const maxTemp = document.getElementById("max__temp")
+
+      const minTemp= document.getElementById("min__temp")
+
+      function getWeather() {
+        fetch("https://api.open-meteo.com/v1/forecast?latitude=19.43&longitude=-99.13&hourly=temperature_2m&current_weather=true&&forecast_days=3&timezone=auto")
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+
+            const getTemperature = datos.hourly.temperature_2m.slice(0, 24);
+
+            let minTemperature = Math.min.apply(null, getTemperature);
+
+            let maxTemperature = Math.max.apply(null, getTemperature);
+
+            weather.innerText = datos.current_weather.temperature;
+
+            maxTemp.innerText = maxTemperature;
+            
+            minTemp.innerText = minTemperature;
+
+
+          });
+      };
+
+      window.addEventListener("load", getWeather);
+
+  </script>
+
+</body>
+</html>
