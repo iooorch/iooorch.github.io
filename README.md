@@ -1,2 +1,2 @@
 # iooorch.github.io
-aplicación web que muestra el reloj la fecha y el clima en la CDMX
+Aplicación web que muestra la hora, fecha y clima en la CDMX
